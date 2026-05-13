@@ -1,0 +1,18 @@
+{
+  "name": "sistema-de-busca-de-pesquisadores",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM.",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "api:build": "npm --workspace apps/api run build",
+    "api:dev": "npm --workspace apps/api run start:dev",
+    "api:test": "npm --workspace apps/api run test",
+    "web:build": "npm --workspace apps/web run build",
+    "web:dev": "npm --workspace apps/web run dev",
+    "web:lint": "npm --workspace apps/web run lint"
+  }
+}

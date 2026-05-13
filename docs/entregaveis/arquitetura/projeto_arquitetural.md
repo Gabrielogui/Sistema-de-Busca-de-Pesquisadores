@@ -11,14 +11,14 @@ A arquitetura proposta organiza os dados do Curriculo Lattes em uma solucao em c
 
 O sistema sera composto pelas seguintes camadas:
 
-| Camada | Responsabilidade | Tecnologia prevista |
+| Camada | Responsabilidade | Tecnologia |
 | --- | --- | --- |
 | Fonte de dados | Arquivos XML do Curriculo Lattes | XML Lattes |
 | Orquestracao de dados | Extrair, transformar e carregar dados | Apache Hop |
 | Persistencia | Armazenar pesquisadores, curriculos, producoes, areas e palavras-chave | PostgreSQL |
 | Busca vetorial | Armazenar embeddings dos titulos e permitir consulta por similaridade | pgvector |
-| Inteligencia artificial | Gerar embeddings a partir dos titulos das producoes | Modelo de embeddings |
-| Backend | Expor regras de consulta, filtros, busca textual e busca semantica | Python + API REST |
+| Inteligencia artificial | Gerar embeddings a partir dos titulos das producoes | Langchain |
+| Backend | Expor regras de consulta, filtros, busca textual e busca semantica | NestJs |
 | Frontend | Permitir busca, filtros, resultados e perfil do pesquisador | Next.js |
 | Analitica | Consumir CSVs de dimensoes e fatos para paineis | Power BI |
 
@@ -29,7 +29,7 @@ O sistema sera composto pelas seguintes camadas:
 3. Os dados estruturados alimentam as tabelas de pesquisadores, curriculos, producoes, areas e palavras-chave.
 4. Os titulos das producoes sao enviados para geracao de embeddings.
 5. Os vetores retornados sao armazenados no PostgreSQL com pgvector.
-6. A API REST em Python consulta o PostgreSQL para busca textual e usa pgvector para busca semantica.
+6. A API REST em NestJS consulta o PostgreSQL para busca textual e usa pgvector para busca semantica.
 7. O frontend em Next.js consome a API e apresenta resultados, filtros e detalhes do pesquisador.
 8. O backend gera CSVs analiticos para importacao no Power BI.
 
@@ -43,7 +43,7 @@ Responsavel pela leitura dos XMLs, tratamento de campos, normalizacao basica e c
 
 O PostgreSQL sera a base principal do sistema. O pgvector sera usado para armazenar representacoes vetoriais dos titulos das producoes cientificas, permitindo ordenacao por similaridade semantica.
 
-### Backend Python
+### Backend NestJs
 
 O backend concentra os endpoints REST, regras de consulta e integracao com o banco. Ele deve expor respostas JSON para o frontend e tambem oferecer rotinas para geracao dos CSVs analiticos.
 

@@ -6,9 +6,10 @@ Projeto: Sistema de busca de informacoes de pesquisadores baseado em Full-Text S
 
 | Entregavel | Arquivo |
 | --- | --- |
+| Requisitos funcionais e nao funcionais | `requisitos/requisitos_funcionais_nao_funcionais.md` |
 | Historias de usuario | `historias_usuario/historias_de_usuario.md` |
 | Diagrama de casos de uso | `diagramas/casos_de_uso.png` |
-| Modelo entidade-relacionamento | `diagramas/der_lattes.svg` |
+| Modelo entidade-relacionamento | `diagramas/DER.png` |
 | Prototipo de media fidelidade | `prototipos/prototipo_media_fidelidade.html` |
 | Projeto arquitetural | `arquitetura/projeto_arquitetural.md` |
 | Diagrama arquitetural | `arquitetura/diagrama_arquitetural.svg` |
