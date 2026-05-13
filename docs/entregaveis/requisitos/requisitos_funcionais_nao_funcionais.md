@@ -81,7 +81,7 @@ Criterios de aceitacao:
 
 ### RF-06 - Disponibilizar API REST em JSON
 
-O sistema deve disponibilizar uma API REST em Python para consulta de pesquisadores, producoes, filtros e resultados de busca.
+O sistema deve disponibilizar uma API REST em NestJS para consulta de pesquisadores, producoes, filtros e resultados de busca.
 
 Origem: Product Backlog - API REST
 Prioridade: Alta
@@ -165,7 +165,7 @@ Criterios de verificacao:
 
 ### RNF-04 - Compatibilidade tecnologica
 
-O sistema deve ser compativel com as tecnologias definidas para o projeto: Apache Hop, PostgreSQL com pgvector, backend Python, API REST, frontend Next.js e Power BI.
+O sistema deve ser compativel com as tecnologias definidas para o projeto: Apache Hop, PostgreSQL com pgvector, backend NestJS, API REST, frontend Next.js e Power BI.
 
 Categoria: Compatibilidade
 Prioridade: Alta

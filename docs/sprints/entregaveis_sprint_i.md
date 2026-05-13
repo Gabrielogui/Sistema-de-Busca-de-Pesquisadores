@@ -122,7 +122,7 @@ Criterios de aceitacao:
 
 ### RF-06 - Disponibilizar API REST em JSON
 
-O sistema deve disponibilizar uma API REST em Python para consulta de pesquisadores, producoes, filtros e resultados de busca.
+O sistema deve disponibilizar uma API REST em NestJS para consulta de pesquisadores, producoes, filtros e resultados de busca.
 
 Origem: Product Backlog - API REST
 Prioridade: Alta
