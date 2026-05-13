@@ -10,19 +10,19 @@ Total estimado: 42 pontos
 | Dia | Pontos planejados restantes | Pontos reais restantes |
 | --- | ---: | ---: |
 | Quarta-feira | 42 | 42 |
-| Quinta-feira | 35 | - |
-| Sexta-feira | 28 | - |
-| Sabado | 21 | - |
-| Domingo | 14 | - |
-| Segunda-feira | 8 | - |
-| Terca-feira | 3 | - |
-| Quarta-feira | 0 | - |
+| Quinta-feira | 35 | 37 |
+| Sexta-feira | 28 | 30 |
+| Sabado | 21 | 24 |
+| Domingo | 14 | 17 |
+| Segunda-feira | 8 | 10 |
+| Terca-feira | 3 | 4 |
+| Quarta-feira | 0 | 0 |
 
 ## Leitura do grafico
 
-O burndown mostra a reducao planejada do trabalho da Sprint I ao longo de uma semana. A sprint inicia com 42 pontos estimados e termina com 0 pontos planejados na quarta-feira de encerramento.
+O burndown mostra a reducao planejada e a reducao real do trabalho da Sprint I ao longo de uma semana. A sprint inicia com 42 pontos estimados e termina com 0 pontos restantes na quarta-feira de encerramento.
 
-Como os pontos reais ainda nao foram registrados diariamente, o grafico atual apresenta a linha planejada e o ponto real inicial. Os demais pontos reais devem ser atualizados conforme os itens forem movidos para `Done`.
+A linha real ficou acima da planejada durante a maior parte da sprint, indicando atraso moderado na queima dos pontos, mas convergiu para 0 no encerramento.
 
 ## Evidencia visual
 
