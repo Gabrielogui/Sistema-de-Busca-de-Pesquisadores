@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototipo de Media Fidelidade - Busca de Pesquisadores</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-muted: #eef2f5;
+      --border: #d8e0e7;
+      --text: #1d2730;
+      --muted: #60717f;
+      --primary: #1f6f8b;
+      --primary-strong: #15536a;
+      --accent: #7a5c16;
+      --success: #2f7d4f;
+      --danger: #a8443d;
+      --shadow: 0 10px 24px rgba(23, 35, 45, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.4;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #26333d;
+      color: #f8fafb;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+      margin-bottom: 20px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #77c1d8;
+      color: #18303a;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .brand span {
+      display: block;
+      color: #b8c6cf;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav a {
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: #dbe6eb;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--success);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-panel {
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 180px 160px;
+      gap: 12px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    .segmented {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 42px;
+      background: #ffffff;
+    }
+
+    .segmented button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .segmented button.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      min-height: 42px;
+      padding: 0 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: var(--surface-muted);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .filters {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .filters h2,
+    .results h2,
+    .profile h2,
+    .reports h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .check-list label {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      color: var(--text);
+      font-size: 14px;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .check-list input {
+      width: 16px;
+      min-height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .results {
+      padding: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .result-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .result-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .result-title h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .score {
+      border-radius: 999px;
+      background: #e9f5f8;
+      color: var(--primary-strong);
+      padding: 5px 9px;
+      font-size: 12px;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tag {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: var(--surface-muted);
+      color: #3d4c56;
+    }
+
+    .prototype-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .profile,
+    .reports {
+      padding: 16px;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      background: #d6e9ef;
+      color: var(--primary-strong);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .person h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .person span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: var(--surface-muted);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 9px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .timeline-item strong {
+      color: var(--primary-strong);
+    }
+
+    .report-list {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .report-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: #ffffff;
+    }
+
+    .report-item strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .report-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .small-action {
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      border-radius: 8px;
+      min-width: 38px;
+      height: 34px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--primary-strong);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .search-grid,
+      .content-grid,
+      .prototype-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 16px;
+      }
+
+      .topbar {
+        display: grid;
+      }
+
+      .nav {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-title,
+      .section-head,
+      .report-item {
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Navegacao principal">
+      <div class="brand">
+        <div class="brand-mark">FT</div>
+        <div>
+          <strong>Full-Text Lattes</strong>
+          <span>Prototipo Sprint I</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="active" href="#busca">Buscar producoes</a>
+        <a href="#resultados">Resultados</a>
+        <a href="#perfil">Perfil do pesquisador</a>
+        <a href="#relatorios">Relatorios CSV</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>Consulta de pesquisadores e producoes cientificas</h1>
+          <p>Busca textual, busca semantica, filtros academicos e exportacao analitica.</p>
+        </div>
+        <div class="status">
+          <span class="dot" aria-hidden="true"></span>
+          Fonte Lattes importada
+        </div>
+      </header>
+
+      <section id="busca" class="panel search-panel" aria-labelledby="titulo-busca">
+        <div class="section-head">
+          <h2 id="titulo-busca">Busca</h2>
+          <span class="count">Base demonstrativa: 1.248 producoes</span>
+        </div>
+
+        <div class="search-grid">
+          <div>
+            <label for="consulta">Termo de pesquisa</label>
+            <input id="consulta" type="search" value="inteligencia artificial generativa" aria-label="Termo de pesquisa">
+          </div>
+
+          <div>
+            <label>Modo</label>
+            <div class="segmented" role="group" aria-label="Modo de busca">
+              <button class="active" type="button">Texto</button>
+              <button type="button">Semantica</button>
+            </div>
+          </div>
+
+          <button class="button" type="button">Buscar</button>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <aside class="panel filters" aria-label="Filtros">
+          <h2>Filtros</h2>
+
+          <div>
+            <label for="ano">Ano</label>
+            <select id="ano">
+              <option>Todos os anos</option>
+              <option>2026</option>
+              <option>2025</option>
+              <option>2024</option>
+              <option>2023</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="tipo">Tipo de producao</label>
+            <select id="tipo">
+              <option>Todos os tipos</option>
+              <option>Artigo em periodico</option>
+              <option>Trabalho em evento</option>
+              <option>Livro ou capitulo</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Areas</label>
+            <div class="check-list">
+              <label><input type="checkbox" checked> Ciencia de Dados</label>
+              <label><input type="checkbox" checked> Inteligencia Artificial</label>
+              <label><input type="checkbox"> Engenharia de Software</label>
+              <label><input type="checkbox"> Banco de Dados</label>
+            </div>
+          </div>
+
+          <button class="button secondary" type="button">Limpar filtros</button>
+        </aside>
+
+        <section id="resultados" class="panel results" aria-labelledby="titulo-resultados">
+          <div class="section-head">
+            <h2 id="titulo-resultados">Resultados</h2>
+            <span class="count">23 itens encontrados</span>
+          </div>
+
+          <div class="result-list">
+            <article class="result-item">
+              <div class="result-title">
+                <h3>Aplicacoes de modelos generativos na recuperacao de informacao academica</h3>
+                <span class="score">Similaridade 0,91</span>
+              </div>
+              <div class="meta">
+                <span>2025</span>
+                <span>Artigo em periodico</span>
+                <span>ISSN 1984-0001</span>
+                <span>DOI 10.0000/exemplo.01</span>
+              </div>
+              <div class="meta">
+                <span class="tag">IA Generativa</span>
+                <span class="tag">Full-Text Search</span>
+                <span class="tag">LLM</span>
+              </div>
+            </article>
+
+            <article class="result-item">
+              <div class="result-title">
+                <h3>Indexacao textual e vetorial de producoes cientificas do Curriculo Lattes</h3>
+                <span class="score">Similaridade 0,87</span>
+              </div>
+              <div class="meta">
+                <span>2024</span>
+                <span>Trabalho em evento</span>
+                <span>ISSN 2358-0002</span>
+                <span>Pesquisadora: Ana Souza</span>
+              </div>
+              <div class="meta">
+                <span class="tag">PostgreSQL</span>
+                <span class="tag">pgvector</span>
+                <span class="tag">Lattes</span>
+              </div>
+            </article>
+
+            <article class="result-item">
+              <div class="result-title">
+                <h3>Pipeline ETL para organizacao de curriculos academicos em bases relacionais</h3>
+                <span class="score">Texto 12 ocorrencias</span>
+              </div>
+              <div class="meta">
+                <span>2023</span>
+                <span>Artigo em periodico</span>
+                <span>ISSN 2675-0003</span>
+                <span>Pesquisador: Marcos Lima</span>
+              </div>
+              <div class="meta">
+                <span class="tag">Apache Hop</span>
+                <span class="tag">ETL</span>
+                <span class="tag">Banco de Dados</span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <div class="prototype-row">
+        <section id="perfil" class="panel profile" aria-labelledby="titulo-perfil">
+          <h2 id="titulo-perfil">Perfil do pesquisador</h2>
+
+          <div class="person">
+            <div class="avatar">AS</div>
+            <div>
+              <h3>Ana Souza</h3>
+              <span>Universidade do Estado da Bahia - Ciencia de Dados</span>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <strong>38</strong>
+              <span>Producoes</span>
+            </div>
+            <div class="metric">
+              <strong>11</strong>
+              <span>Periodicos</span>
+            </div>
+            <div class="metric">
+              <strong>4</strong>
+              <span>Areas</span>
+            </div>
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-item">
+              <strong>2025</strong>
+              <span>Modelos generativos aplicados a consultas academicas.</span>
+            </div>
+            <div class="timeline-item">
+              <strong>2024</strong>
+              <span>Busca semantica sobre titulos de producoes cientificas.</span>
+            </div>
+            <div class="timeline-item">
+              <strong>2023</strong>
+              <span>Extracao de dados estruturados de curriculos Lattes.</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="relatorios" class="panel reports" aria-labelledby="titulo-relatorios">
+          <div class="section-head">
+            <h2 id="titulo-relatorios">Relatorios CSV</h2>
+            <button class="button secondary" type="button">Gerar</button>
+          </div>
+
+          <div class="report-list">
+            <div class="report-item">
+              <div>
+                <strong>dim_pesquisador.csv</strong>
+                <span>Nome, instituicao, areas e identificador Lattes</span>
+              </div>
+              <button class="small-action" type="button" aria-label="Baixar dim pesquisador">v</button>
+            </div>
+
+            <div class="report-item">
+              <div>
+                <strong>dim_tempo.csv</strong>
+                <span>Ano, quadrienio e periodo analitico</span>
+              </div>
+              <button class="small-action" type="button" aria-label="Baixar dim tempo">v</button>
+            </div>
+
+            <div class="report-item">
+              <div>
+                <strong>fato_producao.csv</strong>
+                <span>Producoes por pesquisador, ano e tipo</span>
+              </div>
+              <button class="small-action" type="button" aria-label="Baixar fato producao">v</button>
+            </div>
+          </div>
+
+          <button class="button" type="button">Exportar pacote Power BI</button>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

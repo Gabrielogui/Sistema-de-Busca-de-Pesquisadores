@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama arquitetural da solucao</title>
+  <desc id="desc">Arquitetura em camadas com XML Lattes, Apache Hop, PostgreSQL com pgvector, backend Python, frontend Next.js e Power BI.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#263238"/>
+    </marker>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .band { fill: #ffffff; stroke: #d5dde5; stroke-width: 2; }
+      .box { fill: #eef5f8; stroke: #2f6f86; stroke-width: 2; rx: 8; }
+      .box2 { fill: #f2f6ee; stroke: #5f7f39; stroke-width: 2; rx: 8; }
+      .box3 { fill: #fff6e8; stroke: #9b6a1d; stroke-width: 2; rx: 8; }
+      .title { font: 700 28px Arial, Helvetica, sans-serif; fill: #1d2730; }
+      .label { font: 700 18px Arial, Helvetica, sans-serif; fill: #1d2730; }
+      .small { font: 14px Arial, Helvetica, sans-serif; fill: #45545f; }
+      .arrow { stroke: #263238; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke-dasharray: 7 6; }
+    </style>
+  </defs>
+  <rect class="bg" width="1280" height="720"/>
+  <text class="title" x="64" y="58">Projeto Arquitetural - Busca de Pesquisadores</text>
+
+  <rect class="band" x="50" y="92" width="1180" height="164" rx="10"/>
+  <text class="label" x="72" y="124">Ingestao e persistencia</text>
+  <rect class="box" x="78" y="152" width="180" height="70"/>
+  <text class="label" x="108" y="182">XML Lattes</text>
+  <text class="small" x="108" y="205">Fonte de dados</text>
+  <rect class="box" x="330" y="152" width="190" height="70"/>
+  <text class="label" x="366" y="182">Apache Hop</text>
+  <text class="small" x="365" y="205">ETL e carga</text>
+  <rect class="box2" x="600" y="142" width="220" height="90"/>
+  <text class="label" x="650" y="176">PostgreSQL</text>
+  <text class="small" x="636" y="201">Dados estruturados</text>
+  <rect class="box2" x="900" y="142" width="220" height="90"/>
+  <text class="label" x="970" y="176">pgvector</text>
+  <text class="small" x="932" y="201">Embeddings e similaridade</text>
+  <path class="arrow" d="M258 187 H330"/>
+  <path class="arrow" d="M520 187 H600"/>
+  <path class="arrow" d="M820 187 H900"/>
+
+  <rect class="band" x="50" y="298" width="1180" height="164" rx="10"/>
+  <text class="label" x="72" y="330">Aplicacao</text>
+  <rect class="box3" x="158" y="358" width="220" height="70"/>
+  <text class="label" x="220" y="388">Backend</text>
+  <text class="small" x="196" y="411">Python + API REST</text>
+  <rect class="box3" x="530" y="358" width="220" height="70"/>
+  <text class="label" x="592" y="388">Frontend</text>
+  <text class="small" x="598" y="411">Next.js</text>
+  <rect class="box3" x="900" y="358" width="220" height="70"/>
+  <text class="label" x="972" y="388">Usuarios</text>
+  <text class="small" x="928" y="411">Pesquisa, filtros e perfil</text>
+  <path class="arrow" d="M530 393 H378"/>
+  <path class="arrow" d="M900 393 H750"/>
+  <path class="arrow dash" d="M268 358 C350 278, 610 262, 710 232"/>
+  <path class="arrow dash" d="M268 358 C410 286, 820 270, 1010 232"/>
+
+  <rect class="band" x="50" y="504" width="1180" height="144" rx="10"/>
+  <text class="label" x="72" y="536">Analitica</text>
+  <rect class="box2" x="250" y="566" width="220" height="58"/>
+  <text class="label" x="314" y="596">CSVs</text>
+  <text class="small" x="289" y="616">Dimensoes e fatos</text>
+  <rect class="box2" x="790" y="566" width="220" height="58"/>
+  <text class="label" x="855" y="596">Power BI</text>
+  <text class="small" x="830" y="616">Paineis analiticos</text>
+  <path class="arrow" d="M378 595 H790"/>
+  <path class="arrow dash" d="M268 428 C240 475, 280 530, 330 566"/>
+</svg>
