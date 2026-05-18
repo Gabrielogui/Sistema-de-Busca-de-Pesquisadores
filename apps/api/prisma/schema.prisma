@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Domínio da API
+model Instituicao {
+  id         String   @id @default(uuid())
+  nome       String
+  sigla      String
+  uf         String
+  Grupos_Pesquisa Grupo_Pesquisa[]
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+enum Situacao {
+  ATIVO
+  INATIVO
+  EM_ANALISE
+}
+
+
+model Grupo_Pesquisa {
+  id          String   @id @default(uuid())
+  nome        String
+  ano_formacao Int?
+  area_predominante String
+  situacao      Situacao @default(ATIVO)
+  instituicao   Instituicao @relation(fields: [instituicaoId], references: [id])
+  instituicaoId String
+  membros        Membro_Grupo[]
+  linhas_pesquisa Linha_Pesquisa[]
+  log_coleta_grupo Log_Coleta_Grupo[]
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+model Linha_Pesquisa {
+  id          String   @id @default(uuid())
+  titulo        String
+  objetivo      String
+  grupo        Grupo_Pesquisa @relation(fields: [grupoId], references: [id])
+  grupoId      String
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+model Pesquisador {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  membro_grupo Membro_Grupo[]
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+model Membro_Grupo {
+  id          String   @id @default(uuid())
+  pesquisador   Pesquisador @relation(fields: [pesquisadorId], references: [id])
+  pesquisadorId String
+  grupo        Grupo_Pesquisa @relation(fields: [grupoId], references: [id])
+  grupoId      String
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+
+// Domínio do Scrapper
+
+enum Status_Coleta {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+  ERRO
+}
+
+enum Acao_Coleta {
+  INICIO
+  FIM
+  ERRO
+}
+model Coleta_Scraper{
+  id          String   @id @default(uuid())
+  data_inicio  DateTime
+  data_fim     DateTime
+  status       Status_Coleta @default(PENDENTE)
+  registros_processados Int
+  origem        String
+  log_erros       String
+  log_coleta_grupo Log_Coleta_Grupo[]
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
+
+model Log_Coleta_Grupo {
+  id          String   @id @default(uuid())
+  coleta_scrapper Coleta_Scraper @relation(fields: [coletaId], references: [id])
+  coletaId    String
+  grupo        Grupo_Pesquisa @relation(fields: [grupoId], references: [id])
+  grupoId      String
+  acao       Acao_Coleta @default(INICIO)
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+}
