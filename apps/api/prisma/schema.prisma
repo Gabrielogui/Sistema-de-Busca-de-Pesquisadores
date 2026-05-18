@@ -68,10 +68,10 @@ model Membro_Grupo {
   id          String   @id @default(uuid())
   pesquisador   Pesquisador @relation(fields: [pesquisadorId], references: [id])
   pesquisadorId String
-  grupo        Grupo_Pesquisa @relation(fields: [grupoId], references: [id])
+  grupoPesquisa        Grupo_Pesquisa @relation(fields: [grupoId], references: [id])
   grupoId      String
-  criado_em DateTime @default(now())
-  atualizado_em DateTime @updatedAt
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
 
 
