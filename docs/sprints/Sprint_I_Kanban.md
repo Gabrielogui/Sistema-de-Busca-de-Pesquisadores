@@ -26,7 +26,7 @@ O projeto sera desenvolvido em camadas, seguindo o processo Scrum em sprints sem
 - Transformacao e carga dos dados em uma base relacional PostgreSQL.
 - Modelagem de dados para pesquisadores, producoes cientificas, curriculos, areas, palavras-chave e dados analiticos.
 - Criacao de uma base vetorial com pgvector para armazenar embeddings dos titulos das producoes cientificas.
-- Desenvolvimento de uma camada de back-end em Python, expondo uma API REST em JSON.
+- Desenvolvimento de uma camada de back-end em NestJS, expondo uma API REST em JSON.
 - Implementacao de busca textual usando recursos de Full-Text Search do PostgreSQL.
 - Implementacao de busca semantica usando embeddings e tecnicas de IA Generativa.
 - Criacao de uma camada de front-end em Next.js para consulta, filtros e visualizacao dos resultados.
@@ -58,7 +58,7 @@ O projeto sera organizado em cinco sprints principais:
 
 - Sprint I - Projeto: construcao do Product Backlog, analise e especificacao do projeto, historias de usuario, criterios de aceitacao, casos de uso, projeto arquitetural, prototipo de media fidelidade e modelo entidade-relacionamento.
 - Sprint II - Camada de Orquestracao de Dados: criacao dos fluxos de ETL com Apache Hop para processar XML do Curriculo Lattes e carregar dados no PostgreSQL.
-- Sprint III - Camada de Back-End: desenvolvimento da API REST em Python, busca textual, busca semantica, integracao com pgvector e documentacao da API.
+- Sprint III - Camada de Back-End: desenvolvimento da API REST em NestJS, busca textual, busca semantica, integracao com pgvector e documentacao da API.
 - Sprint IV - Camada de Front-End: desenvolvimento da interface web em Next.js para consumir a API, aplicar filtros e exibir pesquisadores e producoes.
 - Sprint V - Camada Analitica e Apresentacao Final: geracao de CSVs analiticos, criacao de painel no Power BI, video demonstrativo, artigo explicativo e apresentacao final dos artefatos.
 
@@ -88,7 +88,7 @@ Um item so deve ir para `Done` quando:
 | KAN-06 | Especificar historias de usuario com criterios de aceitacao | Requisitos | Alta | 5h | Historias cobrem ETL, busca textual, busca semantica, API, frontend e dados analiticos; cada historia tem criterios de aceitacao |
 | KAN-07 | Criar diagrama de casos de uso | Modelagem | Alta | 3h | Atores principais identificados; casos de uso representam consulta, filtro, busca, carga de dados e exportacao CSV |
 | KAN-08 | Criar descricao textual dos casos de uso principais | Modelagem | Media | 4h | Pelo menos 4 casos de uso descritos com fluxo principal, pre-condicoes e pos-condicoes |
-| KAN-09 | Criar projeto arquitetural da solucao | Arquitetura | Alta | 4h | Diagrama mostra Apache Hop, PostgreSQL/pgvector, backend Python, API REST, frontend Next.js e Power BI |
+| KAN-09 | Criar projeto arquitetural da solucao | Arquitetura | Alta | 4h | Diagrama mostra Apache Hop, PostgreSQL/pgvector, backend NestJS, API REST, frontend Next.js e Power BI |
 | KAN-10 | Modelar esquema entidade-relacionamento inicial | Banco de dados | Alta | 4h | Modelo inclui pesquisadores, producoes, curriculos, palavras-chave/areas e relacionamentos essenciais |
 | KAN-11 | Definir estrategia para dados vetoriais | Arquitetura | Media | 2h | Documento indica quais textos geram embeddings, onde serao armazenados e como a busca semantica sera feita |
 | KAN-12 | Criar prototipo de media fidelidade | UX/UI | Alta | 5h | Prototipo mostra tela de busca, filtros, resultado de pesquisadores, detalhe de producoes e area de relatorios |

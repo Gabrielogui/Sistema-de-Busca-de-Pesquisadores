@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
   <title id="title">Diagrama arquitetural da solucao</title>
-  <desc id="desc">Arquitetura em camadas com XML Lattes, Apache Hop, PostgreSQL com pgvector, backend Python, frontend Next.js e Power BI.</desc>
+  <desc id="desc">Arquitetura em camadas com XML Lattes, Apache Hop, PostgreSQL com pgvector, backend NestJS, frontend Next.js e Power BI.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#263238"/>
@@ -43,7 +43,7 @@
   <text class="label" x="72" y="330">Aplicacao</text>
   <rect class="box3" x="158" y="358" width="220" height="70"/>
   <text class="label" x="220" y="388">Backend</text>
-  <text class="small" x="196" y="411">Python + API REST</text>
+  <text class="small" x="196" y="411">NestJS + API REST</text>
   <rect class="box3" x="530" y="358" width="220" height="70"/>
   <text class="label" x="592" y="388">Frontend</text>
   <text class="small" x="598" y="411">Next.js</text>
