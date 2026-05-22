@@ -1,116 +1,102 @@
 import os
 import time
-import sqlite3
 import logging
 import re
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, Error as PlaywrightError
+# Chama de modo limpo a classe separada!
+from database import init_db, salvar_id_banco
 
 DATA_DIR = "./apps/scraper/data"
-DB_FILE = f"{DATA_DIR}/scraper_estado.db"
 DISCOVERY_LOG = f"{DATA_DIR}/discovery.log"
-
-os.makedirs(DATA_DIR, exist_ok=True)
 
 logger = logging.getLogger("DiscoverySonda")
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
 
 stdout_handler = logging.StreamHandler()
+stdout_handler.setLevel(logging.DEBUG)
 stdout_handler.setFormatter(formatter)
 logger.addHandler(stdout_handler)
 
 file_handler = logging.FileHandler(DISCOVERY_LOG, encoding="utf-8")
+file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS fila_extracao (
-            termo_busca TEXT PRIMARY KEY,
-            status TEXT DEFAULT 'PENDENTE',
-            tentativas INTEGER DEFAULT 0,
-            ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    return conn
-
-def salvar_id_banco(conn, identificador):
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
-            INSERT INTO fila_extracao (termo_busca, status) 
-            VALUES (?, 'PENDENTE')
-        ''', (identificador,))
-        conn.commit()
-        logger.debug(f"ID Extraida e Mapeada para Fila PENDENTE: {identificador}")
-    except sqlite3.IntegrityError:
-        # Mecanismo idempotente para nao travar script caso ele passe sobre um grupo duas vezes
-        pass
-
 def run_discovery():
-    conn = init_db()
-    logger.info("Sonda de Descoberta Inicializada. Conectando API CNPq/Lattes.")
+    init_db()
+    # Utilizando apenas as vogais ja conseguimos puxar praticamente todo portifolio de pesquisas.
+    chaves_varredura = ["a", "e", "i", "o", "u"]
+
+    logger.info("---------------------------------------------------------")
+    logger.info("Sonda de Descoberta Vogal/Alfabetica (DGP CNPq)")
+    logger.info("---------------------------------------------------------")
 
     with sync_playwright() as p:
-        # Recomendavel headless=True para escalabilidade, e False caso deseje inspecionar as abas abrindo e fechando no monitor
         browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
 
-        page.goto("http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf", timeout=60000)
-
-        logger.info("Sonda pronta no gateway de pesquisa. Parametros em BRANCO serao inseridos para Dump do DB Nacional.")
-        # Como o termo ficara vazio, o Lattes aciona "SELECT *" trazendo todos os milhares de grupos
-        page.click("button[id='idFormConsultaParametrizada:idPesquisar']")
-        
-        page.wait_for_selector(".itemConsulta", timeout=30000)
-
-        pagina_atual = 1
-        
-        while True:
-            logger.info(f"--> Inspecionando Indexador de Tabela - Pagina {pagina_atual} <--")
-            time.sleep(2) # Respiro para renderizacao JSF e bloqueios 429 temporarios
+        for chave in chaves_varredura:
+            logger.info(f"Disparando thread de descoberta. Chave de busca: '{chave.upper()}'")
             
-            # Ancorar o seletor universal dos links 
-            botoes_espelho = page.locator("a[id*='idBtnVisualizarEspelhoGrupo']").all()
+            page.goto("http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf", timeout=60000)
             
-            for btn in botoes_espelho:
-                try:
-                    # Expect page para forçar o capture das abas transitorias 
-                    with context.expect_page(timeout=10000) as nova_aba_info:
-                        btn.click()
+            page.fill("input[id='idFormConsultaParametrizada:idTextoFiltro']", chave)
+            page.click("button[id='idFormConsultaParametrizada:idPesquisar']")
+            
+            try:
+                page.wait_for_selector(".itemConsulta", timeout=40000)
+            except PlaywrightError:
+                logger.warning(f"O identificador falhou ou esvaziou a busca na chave '{chave.upper()}'. Avancando.")
+                continue
+
+            pagina_atual = 1
+            while True:
+                logger.info(f"Mapeamento Tabela Indexadora - Bloco: {chave.upper()} | Pagina: {pagina_atual}")
+                time.sleep(1.5)
+                
+                botoes_espelho = page.locator("a[id*='idBtnVisualizarEspelhoGrupo']").all()
+                total_nesta_pagina = len(botoes_espelho)
+                
+                for index, btn in enumerate(botoes_espelho, start=1):
+                    aba = None
+                    try:
+                        time.sleep(0.5) 
+                        with context.expect_page(timeout=15000) as nova_aba_info:
+                            btn.click(force=True)
+                        
+                        aba = nova_aba_info.value
+                        aba.wait_for_selector("#tituloImpressao", timeout=10000)
+                        
+                        conteudo_html = aba.content()
+                        
+                        match = re.search(r'espelhogrupo/(\d{16})', conteudo_html)
+                        if match:
+                            salvar_id_banco(match.group(1), logger)
+
+                    except Exception as e:
+                        logger.warning(f"    [-] Interrupcao no target HTTP ({index}/{total_nesta_pagina}). Loggado e descartado.")
+                    finally:
+                        if aba and not aba.is_closed(): aba.close()
+
+                proximo_btn = page.locator(".ui-paginator-next")
+                if proximo_btn.count() == 0: break
                     
-                    aba = nova_aba_info.value
-                    url_atual = aba.url
-                    # Encerra imediantamente antes da arvore ser montada, para impedir sobrecarga no servidor do governo. Otimizacao nivel rede.
-                    aba.close()
-
-                    # Interceptacao Lexica dos Numeros de Identificacao (IDs de 16 caracteres do cnpq)
-                    match = re.search(r'espelhogrupo/(\d{16})', url_atual)
-                    if match:
-                        salvar_id_banco(conn, match.group(1))
-
-                except Exception as e:
-                    logger.error(f"Instabilidade assincrona no botao. Erro em Sonda Paginadora -> Ignorando.")
-
-            # Estrategia nativa: A rotina deve checar no HTML DOM se o span tem a string do tipo "ui-state-disabled" vinculada à "Proxima Página"
-            proximo_btn = page.locator(".ui-paginator-next").first
-            is_disabled = "ui-state-disabled" in proximo_btn.get_attribute("class")
-            
-            if is_disabled:
-                logger.info("Trigger 'Disabled' alcançado. Catalogo Inteiramente Indexado. Encerramento Concluido!")
-                break
-            else:
-                logger.info("Iteracao avulsa completa. Exigindo POST de Pagina Subsequente.")
-                proximo_btn.click()
-                pagina_atual += 1
-                page.wait_for_selector(".itemConsulta", timeout=15000)
+                is_disabled = "ui-state-disabled" in proximo_btn.first.get_attribute("class")
+                if is_disabled:
+                    logger.info(f"Fim de indexação para a macro-chave '{chave.upper()}'.")
+                    break
+                else:
+                    proximo_btn.first.click()
+                    pagina_atual += 1
+                    page.wait_for_selector(".itemConsulta", timeout=20000)
         
         browser.close()
-    conn.close()
+    
+    logger.info("---------------------------------------------------------")
+    logger.info("Discovery Routine Concluida - Catálogo Salvo em SQLite!")
+    logger.info("---------------------------------------------------------")
 
 if __name__ == "__main__":
     run_discovery()

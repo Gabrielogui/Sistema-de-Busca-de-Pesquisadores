@@ -1,39 +1,45 @@
 import os
 import subprocess
 import sys
+import time
 
-def orquestrar_pipeline():
+def orquestrar_pipeline_paralelo():
     print("======================================================")
-    print("  INICIANDO PIPELINE DE SCRAPING COMPLETO (LATTES/DGP)")
+    print(" 🚀 ORQUESTRAÇÃO EM PARALELO (PRODUTOR-CONSUMIDOR) ")
     print("======================================================\n")
     
-    # Mapeando dinamicamente os modulos da pasta
-    discovery_script = os.path.join("apps", "scraper", "discovery.py")
-    scraper_script = os.path.join("apps", "scraper", "scraper.py")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    discovery_script = os.path.join(base_dir, "discovery.py")
+    scraper_script = os.path.join(base_dir, "scraper.py")
 
-    # ETAPA 1
     print("---------------------------------------------------------")
-    print("⚙️ PASSO 1: Iniciando SONDA DE DESCOBERTA (Paginação Web)")
+    print("⚙️ INICIANDO MOTOR 1: A Sonda (Descoberta Paginada de IDs)")
     print("---------------------------------------------------------")
-    # Subprocess invoca a Sonda no seu python nativo e isola o estado de memória dela
-    try:
-        subprocess.run([sys.executable, discovery_script], check=True)
-    except subprocess.CalledProcessError:
-        print("⚠️ A Sonda identificou um erro critico no modulo discovery. Verifique.")
-        return
+    
+    # Disparo sub-processo aberto
+    processo_sonda = subprocess.Popen([sys.executable, discovery_script])
 
-    # ETAPA 2
+    print("Aguardando 15 segundos para injetar volume base na fila PENDENTE do SQLite...")
+    time.sleep(15)
+
     print("\n---------------------------------------------------------")
-    print("⚙️ PASSO 2: Iniciando ASPIRADOR METADADOS (Gerando os .XMLs)")
+    print("⚙️ INICIANDO MOTOR 2: O Aspirador XML (Metadados Estruturais)")
     print("---------------------------------------------------------")
+    
+    # Liga e anexa a maquina aspiradora em cima da Tabela 
+    processo_scraper = subprocess.Popen([sys.executable, scraper_script])
+
     try:
-        subprocess.run([sys.executable, scraper_script], check=True)
-    except subprocess.CalledProcessError:
-        print("⚠️ Ocorreu um colapso durante a varredura da fila. O SQLite salvara o historico.")
+        processo_sonda.wait()
+        processo_scraper.wait()
+    except KeyboardInterrupt:
+        print("\n\n[!] Break Manual (Ctrl+C). Abortando motores com segurança transacional (Graceful Shutdown).")
+        processo_sonda.terminate()
+        processo_scraper.terminate()
 
     print("\n======================================================")
-    print("          CONCLUÍDO! PIPELINE GERAL FINALIZADO          ")
+    print("          CONCLUÍDO! ESTEIRA DO DATA LAKE ENCERRADA    ")
     print("======================================================")
 
 if __name__ == "__main__":
-    orquestrar_pipeline()
+    orquestrar_pipeline_paralelo()
