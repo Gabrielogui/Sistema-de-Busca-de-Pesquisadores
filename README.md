@@ -1,59 +1,55 @@
 # Sistema de Busca de Pesquisadores
 
-Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM (Engenharia de Software / T.E.E.S).
+Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM.
 
 ## Estrutura
 
 | Caminho | Conteudo |
 | --- | --- |
-| `apps/api` | Backend/API em NestJS e ORM Prisma (Camada Relacional e Vetorial pgvector) |
-| `apps/web` | Frontend UI em Next.js com React e Tailwind |
-| `apps/scraper` | Motor Produtor-Consumidor em Python (Sonda de Descoberta DGP e Aspirador de XML Lattes) |
-| `apps/scraper/data` | Arquivos Extratores Gerados: Dumps em `[ID].xml`, logs de falhas, e DB de controle local em SQLite |
-| `docs/entregaveis` | Artefatos da Sprint I (Arquitetura, Banco, Casos de Uso, Requisitos e Protótipo) |
-| `docs/sprints` | Registros diários (Burndown, Planning, Dailys, Retro) |
+| `apps/api` | Backend/API em NestJS |
+| `apps/web` | Frontend em Next.js |
+| `apps/scraper` | Web Scraper em Python para extração de dados do CNPq (DGP/Lattes) |
+| `apps/scraper/data` | Arquivos XML dos Grupos de Pesquisa e banco de controle em SQLite (`scraper_estado.db`) |
+| `docs/entregaveis` | Artefatos da Sprint I |
+| `docs/sprints` | Planejamento, kanban e consolidado da Sprint I |
+| `docs/referencias` | PDFs e materiais de referencia do trabalho |
+| `data/lattes` | Arquivos XML do Curriculo Lattes usados como dados de entrada |
 
-## Módulo de Extração de Dados (Python Scraper)
+## Workspaces
 
-O pipeline que consome o Diretório de Grupos de Pesquisa do CNPq roda fora do Node.js, executado através de uma arquitetura resiliente. Ele utiliza SQLite para tracking idempotente de requisições, faz *Anti-Bot Evasion Bypass* nativo acessando domínios limpos sem esbarrar no Google reCaptcha da plataforma Lattes.
+O projeto usa workspaces do npm para organizar os aplicativos.
 
-### Instalação
+Comandos principais:
 
-Para montar o ambiente de Ingestão de Dados:
+```bash
+npm run api:dev
+npm run api:test
+npm run web:dev
+npm run web:lint
+```
 
-    # Instale os requerimentos globais (a partir da raiz do monorepo)
-    pip install -r requirements.txt
+Tambem e possivel executar comandos diretamente em cada workspace:
 
-    # Adicione a camada nativa de motores web V8 (Chromium) isolada para Windows
-    python -m playwright install
+```bash
+npm --workspace apps/api run build
+npm --workspace apps/web run build
+```
 
-### Execução Completa (Pipeline Orquestrado)
+## Scraper (Python)
 
-Para ativar os dois scripts base ("Sonda" vasculhando os IDs no portal e o "Aspirador" formatando os HTML em árvore de XML):
+A automação de raspagem (Sonda de Descoberta e Extração em Lote) roda via scripts independentes do monorepo de backend/frontend. Para executar e atualizar a base do Data Lake:
 
-    # Da raiz do projeto
-    python apps/scraper/run.py
+```bash
+# Instale os requerimentos do projeto a partir da raiz 
+pip install -r requirements.txt
 
-### Execução Limitada / Manual (Lotes Analíticos)
+# Habilite a camada web paralela 
+python -m playwright install
 
-Caso queira isolar a execução do scraper oficial passando as Primary Keys (Identificador Lattes ID 16) desejadas:
+# Dispare os dois motores do extrator (Em Produtor/Consumidor)
+python apps/scraper/run.py
+```
 
-    # Modo array via linha de comando
-    python apps/scraper/scraper.py --grupos 4875461296350899 1250036305286788
+## Entregaveis
 
-    # Modo Injeção Bulk (usando arquivos *.txt, um ID por linha)
-    python apps/scraper/scraper.py --arquivo id.txt
-
-## Workspaces de Interface e Server (Node.js)
-
-O ecossistema é consolidado via *NPM Workspaces*. Comandos principais:
-
-    npm run api:dev
-    npm run api:test
-    npm run web:dev
-    npm run web:lint
-
-Execução referenciada diretamente ao contexto isolado:
-
-    npm --workspace apps/api run build
-    npm --workspace apps/web run build
+Os entregaveis principais da Sprint I estao em `docs/entregaveis`, incluindo requisitos, historias de usuario, diagramas, projeto arquitetural, prototipo e burndown.
