@@ -8,6 +8,8 @@ Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM.
 | --- | --- |
 | `apps/api` | Backend/API em NestJS |
 | `apps/web` | Frontend em Next.js |
+| `apps/scraper` | Web Scraper em Python para extração de dados do CNPq (DGP/Lattes) |
+| `apps/scraper/data` | Arquivos XML dos Grupos de Pesquisa e banco de controle em SQLite (`scraper_estado.db`) |
 | `docs/entregaveis` | Artefatos da Sprint I |
 | `docs/sprints` | Planejamento, kanban e consolidado da Sprint I |
 | `docs/referencias` | PDFs e materiais de referencia do trabalho |
@@ -31,6 +33,21 @@ Tambem e possivel executar comandos diretamente em cada workspace:
 ```bash
 npm --workspace apps/api run build
 npm --workspace apps/web run build
+```
+
+## Scraper (Python)
+
+A automação de raspagem (Sonda de Descoberta e Extração em Lote) roda via scripts independentes do monorepo de backend/frontend. Para executar e atualizar a base do Data Lake:
+
+```bash
+# Instale os requerimentos do projeto a partir da raiz 
+pip install -r requirements.txt
+
+# Habilite a camada web paralela 
+python -m playwright install
+
+# Dispare os dois motores do extrator (Em Produtor/Consumidor)
+python apps/scraper/run.py
 ```
 
 ## Entregaveis

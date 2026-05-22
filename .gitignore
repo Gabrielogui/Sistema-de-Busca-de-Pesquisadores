@@ -2,6 +2,7 @@
 node_modules/
 **/node_modules/
 
+
 # Build outputs
 dist/
 build/
@@ -25,3 +26,11 @@ pnpm-debug.log*
 Thumbs.db
 .idea/
 .vscode/
+
+# Ignorar binarios de compilacao nativa do Python
+__pycache__/
+*.pyc
+*.pyo
+
+apps/scraper/*/*.db
+diff.txt
