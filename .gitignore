@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 **/node_modules/
-*.db
+
 
 # Build outputs
 dist/
@@ -26,3 +26,11 @@ pnpm-debug.log*
 Thumbs.db
 .idea/
 .vscode/
+
+# Ignorar binarios de compilacao nativa do Python
+__pycache__/
+*.pyc
+*.pyo
+
+apps/scraper/*/*.db
+diff.txt
