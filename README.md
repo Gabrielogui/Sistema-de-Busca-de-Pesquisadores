@@ -1,6 +1,6 @@
-# Sistema de Busca de Pesquisadores
+# API para Grupos de Pesquisa
 
-Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM.
+Monorepo do backend e frontend para consulta de grupos de pesquisa do DGP/CNPq, com API REST, coleta por scraper, busca textual, busca semantica com LangChain e persistencia em PostgreSQL/pgvector.
 
 ## Estrutura
 
@@ -9,9 +9,9 @@ Monorepo do Sistema de Busca de Pesquisadores baseado em Full-Text Search e LLM.
 | `apps/api` | Backend/API em NestJS |
 | `apps/web` | Frontend em Next.js |
 | `docs/entregaveis` | Artefatos da Sprint I |
-| `docs/sprints` | Planejamento, kanban e consolidado da Sprint I |
+| `docs/sprints` | Planejamento, kanban e consolidados das sprints |
 | `docs/referencias` | PDFs e materiais de referencia do trabalho |
-| `data/lattes` | Arquivos XML do Curriculo Lattes usados como dados de entrada |
+| `data/lattes` | Dados academicos complementares usados apenas como exemplos auxiliares |
 
 ## Workspaces
 
@@ -35,4 +35,6 @@ npm --workspace apps/web run build
 
 ## Entregaveis
 
-Os entregaveis principais da Sprint I estao em `docs/entregaveis`, incluindo requisitos, historias de usuario, diagramas, projeto arquitetural, prototipo e burndown.
+Os entregaveis principais da Sprint I estao em `docs/entregaveis`, incluindo requisitos, historias de usuario, diagramas, projeto arquitetural, prototipo e burndown. O planejamento da Sprint II esta em `docs/sprints/Sprint_II_Kanban.md`.
+
+O contexto atualizado do TCC esta em `docs/contexto_tcc_backend_grupos_pesquisa.md`.
