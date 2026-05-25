@@ -11,6 +11,9 @@
     "api:build": "npm --workspace apps/api run build",
     "api:dev": "npm --workspace apps/api run start:dev",
     "api:test": "npm --workspace apps/api run test",
+    "langchain:build": "npm --prefix apps/langchain run build",
+    "langchain:dev": "npm --prefix apps/langchain run start:dev",
+    "langchain:start": "npm --prefix apps/langchain run start",
     "web:build": "npm --workspace apps/web run build",
     "web:dev": "npm --workspace apps/web run dev",
     "web:lint": "npm --workspace apps/web run lint"
