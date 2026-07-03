@@ -1,9 +1,14 @@
 "use client";
+import { Pesquisador } from "@/core/researcher";
 import { Book } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function ResearcherCard() {
+interface ResearcherCardProps {
+    pesquisador: Pesquisador;
+}
+
+export default function ResearcherCard({ pesquisador } : ResearcherCardProps) {
     const [openDrawer, setOpenDrawer] = useState(false);
 
     return (
@@ -17,22 +22,22 @@ export default function ResearcherCard() {
                         alt="Imagem do pesquisador"
                         className="rounded-t-lg object-cover"
                         src={
-                           "https://picsum.photos/200/300"
+                           `https://oda.vertb.com.br${pesquisador.imageUrl}`
                         }
                     />
                 </div>
 
                 <div className="relative flex h-full flex-col justify-end gap-2 p-2">
                     <div className="text-white">
-                        <p className="text-xl">Nome</p>
+                        <p className="text-xl">{pesquisador.nome}</p>
                         <div className="hidden group-hover:block">
-                            <p>Info 01</p>
-                            <p>Info 02</p>
+                            <p>{pesquisador.formacaoAcademica}</p>
+                            <p>{pesquisador.lattesId}</p>
                         </div>
                     </div>
                     <div className="bg-red-800 flex w-fit items-center justify-center gap-2 rounded-sm px-3 py-1 text-white">
                         <Book size={20} />
-                        <p className="mb-1">Mestrado</p>
+                        <p className="mb-1">{pesquisador.tipo}</p>
                     </div>
                 </div>
                 

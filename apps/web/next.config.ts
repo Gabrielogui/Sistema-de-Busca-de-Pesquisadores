@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
                 port: "",
                 pathname: "/**",
             },
+            {
+                protocol: "https",
+                hostname: "oda.vertb.com.br",
+                port: "",
+                pathname: "/**",
+            }
         ]
     }
 };
