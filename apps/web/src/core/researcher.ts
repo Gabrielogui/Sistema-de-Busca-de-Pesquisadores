@@ -27,3 +27,14 @@ export interface MembroGrupo {
     atualizadoEm: string;
     pesquisador: Pesquisador;
 }
+
+export interface PesquisadorFilters {
+    nome?: string;
+    formacaoAcademica?: string;
+    tipo?: string;
+    lattesId?: string;
+    orcidId?: string;
+    grupoPesquisaId?: string;
+    page: number;
+    size: number;
+}

@@ -22,3 +22,13 @@ export interface Producao {
     criadoEm: string;
     producao: ProducaoDetalhe;
 }
+
+export interface ProducaoFilters {
+    titulo?: string;
+    ano?: number;
+    tipo?: string;
+    pesquisadorId?: string;
+    grupoId?: string;
+    page: number;
+    size: number;
+}
