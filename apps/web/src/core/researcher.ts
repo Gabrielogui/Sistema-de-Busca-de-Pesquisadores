@@ -1,3 +1,5 @@
+import { Producao } from "./producao";
+
 export type TipoMembro = 'PESQUISADOR' | 'ESTUDANTE' | 'TECNICO';
 export type FormacaoAcademica = 'GRADUACAO' | 'MESTRADO' | 'DOUTORADO' | 'OUTRO';
 
@@ -14,6 +16,7 @@ export interface Pesquisador {
     indexI10: number | null;
     criadoEm: string;
     atualizadoEm: string;
+    producoes?: Producao[];
 }
 
 export interface MembroGrupo {
