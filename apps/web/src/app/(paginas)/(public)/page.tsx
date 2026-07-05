@@ -49,7 +49,7 @@ export default async function Home() {
                     <PencilLine />
                     <h2 className="font-semibold">Linha de Pesquisa</h2>
                 </div>
-                <ResearchLine />    
+                { grupoPesquisa.linhasPesquisa?.map((linha) => <ResearchLine key={linha.id} linhaPesquisa={linha} />) }
             </div>
         </div>
     );

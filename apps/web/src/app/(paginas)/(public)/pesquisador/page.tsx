@@ -1,7 +1,11 @@
 import ResearcherCardDetails from "@/components/researcher/ResearcherCardDetails";
+import { getGrupoPesquisaPorId } from "@/service/researchGroupService";
 import { Users2 } from "lucide-react";
 
-export default function Pesquisador() {
+export default async function Pesquisador() {
+    const response = await getGrupoPesquisaPorId("5c0de827-daac-409a-96ad-e81417ac467b");
+    const grupoPesquisa = response.data;
+
     return (
         <div className="flex flex-col gap-8">
             <div className="flex gap-3 items-center text-2xl">
@@ -16,7 +20,13 @@ export default function Pesquisador() {
             </div>
 
             <div className="flex flex-col gap-4 justify-items-center">
-                {Array.from({ length: 5 }, (_, i) => i).map((i) => <ResearcherCardDetails key={i} />)}
+                {grupoPesquisa.membros?.map((membro) => (
+                    <ResearcherCardDetails 
+                        key={membro.pesquisador.id} 
+                        pesquisador={membro.pesquisador}
+                        instituicaoNome={grupoPesquisa.instituicao?.nome}
+                    />
+                ))}
             </div>
         </div>
     );
